@@ -106,5 +106,4 @@ ziggrep --hidden -r "secret" .
 - Negation (`!important.log`)
 - Recursive patterns (`**/node_modules`)
 
-## License
-MIT
+
