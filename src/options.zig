@@ -15,6 +15,7 @@ pub const Options = struct {
     include_types: []const []const u8 = &.{},
     exclude_types: []const []const u8 = &.{},
     globs: []const []const u8 = &.{},
+    tui: bool = false,
 };
 
 pub const Args = struct {
@@ -89,6 +90,8 @@ pub fn parseArgs(allocator: std.mem.Allocator) !Args {
             i += 1;
             if (i >= all_args.len) return error.InvalidArgs;
             try globs.append(allocator, try allocator.dupe(u8, all_args[i]));
+        } else if (std.mem.eql(u8, arg, "--tui")) {
+            options.tui = true;
         } else if (std.mem.eql(u8, arg, "-h") or std.mem.eql(u8, arg, "--help")) {
             printHelp();
             return error.HelpRequested;
@@ -99,6 +102,31 @@ pub fn parseArgs(allocator: std.mem.Allocator) !Args {
             // Duplicate path strings so they remain valid after argsFree
             try paths.append(allocator, try allocator.dupe(u8, arg));
         }
+    }
+
+    // TUI mode doesn't require pattern and paths
+    if (options.tui) {
+        return Args{
+            .options = .{
+                .show_line_numbers = options.show_line_numbers,
+                .ignore_case = options.ignore_case,
+                .use_color = options.use_color,
+                .recursive = options.recursive,
+                .use_regex = options.use_regex,
+                .before_context = options.before_context,
+                .after_context = options.after_context,
+                .count = options.count,
+                .files_with_matches = options.files_with_matches,
+                .invert_match = options.invert_match,
+                .hidden = options.hidden,
+                .include_types = try include_types.toOwnedSlice(allocator),
+                .exclude_types = try exclude_types.toOwnedSlice(allocator),
+                .globs = try globs.toOwnedSlice(allocator),
+                .tui = options.tui,
+            },
+            .pattern = pattern orelse "",
+            .paths = try paths.toOwnedSlice(allocator),
+        };
     }
 
     if (pattern == null or paths.items.len == 0) {
@@ -122,6 +150,7 @@ pub fn parseArgs(allocator: std.mem.Allocator) !Args {
             .include_types = try include_types.toOwnedSlice(allocator),
             .exclude_types = try exclude_types.toOwnedSlice(allocator),
             .globs = try globs.toOwnedSlice(allocator),
+            .tui = options.tui,
         },
         .pattern = pattern.?,
         .paths = try paths.toOwnedSlice(allocator),
@@ -150,6 +179,7 @@ pub fn printHelp() void {
         \\  -B, --before-context Print N lines before match
         \\  -C, --context        Print N lines around match
         \\  --color              Force colored output
+        \\  --tui                Launch interactive TUI mode
         \\  -h, --help           Show this help message
         \\
         \\Examples:

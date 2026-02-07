@@ -36,6 +36,10 @@
             .url = "https://github.com/tiehuis/zig-regex/archive/refs/heads/master.tar.gz",
             .hash = "regex-0.1.3-axC357jaAQBRENglwG9NTcuej8pYz1IZmfwER_AXMlHZ",
         },
+        .vaxis = .{
+            .url = "git+https://github.com/rockorager/libvaxis#8a9c2d5e1b3778f1ea43c9bd5d325cfa72016584",
+            .hash = "vaxis-0.5.1-BWNV_Bw_CQAIVNh1ekGVzbip25CYBQ_J3kgABnYGFnI4",
+        },
     },
     .paths = .{
         "build.zig",

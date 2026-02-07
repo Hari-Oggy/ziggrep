@@ -2,7 +2,7 @@ const std = @import("std");
 const types = @import("types.zig");
 const options = @import("options.zig");
 const regex = @import("regex");
-const glob = @import("glob.zig"); // New import
+const glob = @import("glob.zig");
 const ignore = @import("ignore.zig");
 
 pub const WalkError = error{

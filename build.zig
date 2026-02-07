@@ -28,6 +28,7 @@ pub fn build(b: *std.Build) void {
             .imports = &.{
                 .{ .name = "ziggrep", .module = mod },
                 .{ .name = "regex", .module = regex_dep.module("regex") },
+                .{ .name = "vaxis", .module = b.dependency("vaxis", .{ .target = target, .optimize = optimize }).module("vaxis") },
             },
         }),
     });

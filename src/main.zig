@@ -41,6 +41,13 @@ pub fn main() !void {
 
     var mutex = std.Thread.Mutex{};
 
+    // Check for TUI mode
+    if (opts.tui) {
+        const tui = @import("tui/main.zig");
+        try tui.run(allocator, args);
+        return;
+    }
+
     for (args.paths) |path| {
         processPath(allocator, path, args.pattern, opts, show_filename, &pool, &mutex) catch |err| {
             std.debug.print("Error processing '{s}': {}\n", .{ path, err });
@@ -124,7 +131,5 @@ fn worker(
     mutex: *std.Thread.Mutex,
 ) void {
     defer allocator.free(path);
-    searcher.searchFile(allocator, path, pattern, opts, show_filename, mutex) catch {
-       
-    };
+    searcher.searchFile(allocator, path, pattern, opts, show_filename, mutex) catch {};
 }
